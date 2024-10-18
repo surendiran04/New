@@ -36,8 +36,13 @@ int main() {
 
     while (true) {
         string hostname;
-        cout << "Enter hostname to resolve: ";
+        cout << "Enter hostname to resolve (or type 'exit' to quit): ";
         cin >> hostname;
+
+        // Exit condition
+        if (hostname == "exit") {
+            break;
+        }
 
         // Send hostname to mediator
         send(client_fd, hostname.c_str(), hostname.length(), 0);
@@ -45,4 +50,16 @@ int main() {
         // Receive response from mediator
         memset(buffer, 0, sizeof(buffer));
         int valread = read(client_fd, buffer, 1024);
-        if (valread > 
+        if (valread > 0) {
+            cout << "Resolved IP: " << buffer << endl;
+        } else {
+            cout << "No response from mediator or server" << endl;
+        }
+    }
+
+    // Close the socket connection
+    close(client_fd);
+
+    return 0;
+}
+
