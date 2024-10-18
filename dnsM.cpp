@@ -16,7 +16,7 @@ int main() {
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
 
-    unordered_map<string, string> cache; // Cache for storing resolved IPs
+    unordered_map<string, string> cache = {{"microsoft.com","125.10.36.14"},{"annauniv.edu","119.168.1.200"}}; // Cache for storing resolved IPs
 
     // Create mediator socket
     if ((mediator_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
