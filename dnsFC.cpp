@@ -45,6 +45,16 @@ int main() {
         return -1;
     }
 
+    // Connect to server 1
+    if (connect(client_fd1, (struct sockaddr *)&server1_address, sizeof(server1_address)) < 0) {
+        perror("Connection to Server 1 failed");
+    }
+
+    // Connect to server 2
+    if (connect(client_fd2, (struct sockaddr *)&server2_address, sizeof(server2_address)) < 0) {
+        perror("Connection to Server 2 failed");
+    }
+
     while (true) {
         string hostname;
         cout << "Enter hostname to resolve (or type 'exit' to quit): ";
@@ -54,34 +64,31 @@ int main() {
             break;
         }
 
-        // Connect to server 1
-        if (connect(client_fd1, (struct sockaddr *)&server1_address, sizeof(server1_address)) >= 0) {
-            send(client_fd1, hostname.c_str(), hostname.length(), 0);
+        // Send hostname to server 1
+        send(client_fd1, hostname.c_str(), hostname.length(), 0);
+        memset(buffer, 0, sizeof(buffer));
+        int valread = read(client_fd1, buffer, 1024);
+
+        if (valread > 0 && strcmp(buffer, "Not found") != 0) {
+            cout << "Server 1 Resolved IP: " << buffer << endl;
+        } else {
+            // Try server 2 if not found in server 1
+            send(client_fd2, hostname.c_str(), hostname.length(), 0);
             memset(buffer, 0, sizeof(buffer));
-            int valread = read(client_fd1, buffer, 1024);
+            valread = read(client_fd2, buffer, 1024);
 
-            if (valread > 0) {
-                cout << "Server 1 Resolved IP: " << buffer << endl;
+            if (valread > 0 && strcmp(buffer, "Not found") != 0) {
+                cout << "Server 2 Resolved IP: " << buffer << endl;
             } else {
-                // Try server 2 if not found in server 1
-                if (connect(client_fd2, (struct sockaddr *)&server2_address, sizeof(server2_address)) >= 0) {
-                    send(client_fd2, hostname.c_str(), hostname.length(), 0);
-                    memset(buffer, 0, sizeof(buffer));
-                    valread = read(client_fd2, buffer, 1024);
-
-                    if (valread > 0) {
-                        cout << "Server 2 Resolved IP: " << buffer << endl;
-                    } else {
-                        cout << "Hostname not found in both servers" << endl;
-                    }
-                }
+                cout << "Hostname not found in both servers" << endl;
             }
         }
-
-        // Close both sockets after use
-        close(client_fd1);
-        close(client_fd2);
     }
+
+    // Close both sockets when done
+    close(client_fd1);
+    close(client_fd2);
 
     return 0;
 }
+
