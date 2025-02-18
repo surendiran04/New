@@ -1,0 +1,52 @@
+Git - Distributed version control system (DVCS) that allows developer to track changes in their codebase and collaborate with others and manage diff version of their projects.
+
+DVCS - 2 repos 
+       1.Local repo
+       2.Remote repo
+
+GitHub - Hosting service for git repositories allows developers to access and download projects from any computers.
+         GitHub recommends to keep a size of 1GB per repo but we can keep up to less than 5GB.At max a single file need to have less than 50MB.
+
+Git commands:
+git log  -- Shows from the most recent commits
+git log --oneline
+git status -s   --- Shows tracking details of the file (?? -untracked,A-added,M-Modified)
+git commit -a -m " " --- add and commit at the same time (Only works for already tracked file)
+git commit -am "" --- works in the same way
+
+while putting pass for GitHub we need to use token for password in Linux console
+
+Head keeps track of the current branch and recent commit in that branch.
+(use git visualizer - https://git-school.github.io/visualizing-git/)
+
+Four stages:
+   1.Working area
+   2.Staging area
+   3.Commit History
+   4.Remote repo
+
+let's assume I had 1 file while working on master, If I change the branch to dev, then I add another file and change the already written files content and return back to master
+the master will have only one file with old content it had.
+
+git checkout --- we can pass branch as well as commit ID
+git checkout -b  ---create a branch and switch to that branch
+
+Fast Forward merge 
+     The 2nd branch will contain the commits of prev branch
+
+merge ->conflict 
+      git merge branchname -- merge with the current branch ,the commit history with the uncommon commits of the current branch until common commit then it shows the newly merged commits then the common commits. Initially it creates a new commit known as mergecommit and it'll be showed first while logging.
+   
+      While working with conflicts, In VS code a GUI opens up and we can edit it manually
+but it in Linux we need to use mergetool which shows the local,base,remote branches that made the conflicts then merge tool editor we can edit there manually else 
+use command to diffg LO/BA/RE select the exact correct code.
+
+
+Rebase
+      git rebase branchname -- current branch commits will be deleted until the base commit (common commit) and joined after the latest commit of the given branch.
+
+Cherry-pick
+      git cherry-pick commitID -- Helps the take the copy of the commit and add it after the recent commit of the current branch
+
+
+ 
